@@ -1,0 +1,7 @@
+@Override public String toString() {
+    return toStringHelper(this)
+    #foreach ($field in $fields)
+        .add(\"$field.Name\", $field.Name)
+    #end
+        .toString();
+}

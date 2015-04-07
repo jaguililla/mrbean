@@ -1,0 +1,56 @@
+<idea-plugin version="2">
+    <id>co.there4.mrbean</id>
+    <name>MrBean</name>
+    <version>1.0</version>
+    <vendor email="juanjoaguililla@gmail.com" url="http://there4.com">there4.co</vendor>
+
+    <description>Let MrBean generate most of the boiler plate for you!</description>
+
+    <change-notes>
+        <![CDATA[
+        * First version: based in Guava Generators: https://github.com/seanlandsman/guavagenerators
+        ]]>
+    </change-notes>
+
+    <!--
+     ! please see http://confluence.jetbrains.com/display/IDEADEV/Build+Number+Ranges
+     ! for reference
+     !-->
+    <idea-version since-build="131" />
+
+    <actions>
+        <action
+            id="overrideHashCode"
+            class="co.there4.mrbean.GenerateHashCode"
+            text="Override hashCode()..."
+            description="Overrides Object's hashCode() method">
+
+            <add-to-group group-id="GenerateGroup" anchor="last" />
+        </action>
+
+        <action
+            id="overrideEquals"
+            class="co.there4.mrbean.GenerateEquals"
+            text="Override equals()..."
+            description="Overrides Object's equals() method">
+
+            <add-to-group group-id="GenerateGroup" anchor="last" />
+        </action>
+
+        <action
+            id="overrideToString"
+            class="co.there4.mrbean.GenerateToString"
+            text="Override toString()..."
+            description="Overrides Object's toString() method">
+
+            <add-to-group group-id="GenerateGroup" anchor="last" />
+        </action>
+
+        <!-- TODO getter, setters, copy constructors, builders, comparator, clone -->
+    </actions>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <applicationService serviceImplementation="co.there4.mrbean.Settings"/>
+        <applicationConfigurable instance="co.there4.mrbean.Settings" />
+    </extensions>
+</idea-plugin>
