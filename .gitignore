@@ -12,3 +12,6 @@ build/
 out/
 .idea/
 *.iml
+
+# Add plugin zip
+!mrbean.zip

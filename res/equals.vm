@@ -1,3 +1,4 @@
+/** {@inheritDoc} */
 @Override public boolean equals (Object o) {
     if (this == o)
         return true;
@@ -7,8 +8,6 @@
     $clazz.Name that = ($clazz.Name)o;
     return
     #foreach ($field in $fields)
-        java.util.Objects.equals (this.$field.Name, that.$field.Name)
-        #if ($foreach.hasNext)&&#end
+        java.util.Objects.equals (this.$field.Name, that.$field.Name)#if ($foreach.hasNext) &&#else;#end
     #end
-    ;
 }

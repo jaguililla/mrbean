@@ -1,7 +1,0 @@
-@Override public int hashCode () {
-    return java.util.Objects.hash (
-    #foreach ($field in $fields)
-        $field.Name#if ($foreach.hasNext), #end
-    #end
-    );
-}

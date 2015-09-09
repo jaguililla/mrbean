@@ -1,13 +1,15 @@
 <idea-plugin version="2">
     <id>co.there4.mrbean</id>
     <name>MrBean</name>
-    <version>1.0</version>
+    <version>0.1</version>
     <vendor email="juanjoaguililla@gmail.com" url="http://there4.com">there4.co</vendor>
 
     <description>Let MrBean generate most of the boiler plate for you!</description>
 
     <change-notes>
         <![CDATA[
+        * Initial settings panel
+        * Add support for generating multiple methods
         * First version: based in Guava Generators: https://github.com/seanlandsman/guavagenerators
         ]]>
     </change-notes>
@@ -19,20 +21,12 @@
     <idea-version since-build="131" />
 
     <actions>
+        <!-- Object methods -->
         <action
-            id="overrideHashCode"
-            class="co.there4.mrbean.GenerateHashCode"
-            text="Override hashCode()..."
-            description="Overrides Object's hashCode() method">
-
-            <add-to-group group-id="GenerateGroup" anchor="last" />
-        </action>
-
-        <action
-            id="overrideEquals"
-            class="co.there4.mrbean.GenerateEquals"
-            text="Override equals()..."
-            description="Overrides Object's equals() method">
+            id="overrideEqualsAndHashCode"
+            class="co.there4.mrbean.GenerateEqualsAndHashCode"
+            text="MrBean equals() and hashCode()..."
+            description="Overrides Object's equals() and hashCode() methods">
 
             <add-to-group group-id="GenerateGroup" anchor="last" />
         </action>
@@ -40,17 +34,61 @@
         <action
             id="overrideToString"
             class="co.there4.mrbean.GenerateToString"
-            text="Override toString()..."
+            text="MrBean toString()..."
             description="Overrides Object's toString() method">
 
             <add-to-group group-id="GenerateGroup" anchor="last" />
         </action>
 
-        <!-- TODO getter, setters, copy constructors, builders, comparator, clone -->
+        <!-- Immutable beans -->
+        <action
+            id="generateWith"
+            class="co.there4.mrbean.GenerateWith"
+            text="MrBean with()..."
+            description="Generates Fields' with() methods">
+
+            <add-to-group group-id="GenerateGroup" anchor="last" />
+        </action>
+
+        <action
+            id="generateImmutableBean"
+            class="co.there4.mrbean.GenerateImmutableBean"
+            text="MrBean immutable Bean..."
+            description="Generates all immutable Bean methods">
+
+            <add-to-group group-id="GenerateGroup" anchor="last" />
+        </action>
+
+        <!-- Mutable beans -->
+        <action
+            id="generateGet"
+            class="co.there4.mrbean.GenerateGet"
+            text="MrBean get()..."
+            description="Generates Fields' get() methods">
+
+            <add-to-group group-id="GenerateGroup" anchor="last" />
+        </action>
+
+        <action
+            id="generateSet"
+            class="co.there4.mrbean.GenerateSet"
+            text="MrBean set()..."
+            description="Generates Fields' set() methods">
+
+            <add-to-group group-id="GenerateGroup" anchor="last" />
+        </action>
+
+        <action
+            id="generateBean"
+            class="co.there4.mrbean.GenerateBean"
+            text="MrBean Bean..."
+            description="Generates all Bean methods">
+
+            <add-to-group group-id="GenerateGroup" anchor="last" />
+        </action>
     </actions>
 
     <extensions defaultExtensionNs="com.intellij">
-        <applicationService serviceImplementation="co.there4.mrbean.Settings"/>
         <applicationConfigurable instance="co.there4.mrbean.Settings" />
     </extensions>
 </idea-plugin>

@@ -1,0 +1,4 @@
+/** @see #$field.Name */
+public $field.Type.CanonicalText get$fieldName () {
+    return $field.Name;
+}

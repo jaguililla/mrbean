@@ -1,0 +1,8 @@
+/** {@inheritDoc} */
+@Override public String toString() {
+    return new java.util.StringJoiner("\n")
+    #foreach ($field in $fields)
+        .add("$field.Name: " + String.valueOf ($field.Name))
+    #end
+        .toString();
+}

@@ -1,5 +1,6 @@
 package co.there4.mrbean;
 
+import static co.there4.mrbean.Settings.*;
 import static com.intellij.openapi.actionSystem.CommonDataKeys.EDITOR;
 import static com.intellij.openapi.actionSystem.CommonDataKeys.PSI_FILE;
 import static com.intellij.psi.JavaPsiFacade.getElementFactory;
@@ -16,26 +17,18 @@ import com.intellij.psi.codeStyle.JavaCodeStyleManager;
 import org.apache.velocity.VelocityContext;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.List;
-import java.util.Scanner;
 
-public abstract class GenerateAction extends AnAction {
+abstract class GenerateAction extends AnAction {
     private final String dialogTitle;
-    private final String method, template;
+    private final String method;
 
-    public GenerateAction (String text, String dialogTitle, String method, String template) {
+    GenerateAction (String text, String dialogTitle, String method) {
         super (text);
 
         this.dialogTitle = dialogTitle;
         this.method = method;
-        this.template = loadTemplate (template);
-    }
-
-    private String loadTemplate (String templateName) {
-        InputStream input = GenerateToString.class.getResourceAsStream (templateName);
-        return new Scanner (input).useDelimiter ("\\A").next ();
     }
 
     protected void setNewMethod (PsiClass psiClass, String newMethodBody, String methodName) {
@@ -79,7 +72,6 @@ public abstract class GenerateAction extends AnAction {
 
         StringWriter output = new StringWriter();
         evaluate (context, output, "mrbean", template);
-
         setNewMethod (clazz, output.toString (), name);
     }
 
@@ -107,10 +99,10 @@ public abstract class GenerateAction extends AnAction {
         evt.getPresentation ().setEnabled (clazz != null);
     }
 
-    public void generate (final PsiClass clazz, final List<PsiField> fields) {
+    protected void generate (final PsiClass clazz, final List<PsiField> fields) {
         new WriteCommandAction.Simple (clazz.getProject (), clazz.getContainingFile ()) {
             @Override protected void run () throws Throwable {
-                generate (clazz, fields, template, method);
+                generate (clazz, fields, method == null? "" : getTemplate (method), method);
             }
         }.execute ();
     }

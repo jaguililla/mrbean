@@ -1,0 +1,4 @@
+/** @see #$field.Name */
+public void set$fieldName ($field.Type.CanonicalText $field.Name) {
+    this.$field.Name = $field.Name
+}

@@ -13,11 +13,11 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 import java.util.List;
 
-public class FieldSelectionDialog extends DialogWrapper {
+final class FieldSelectionDialog extends DialogWrapper {
     private CollectionListModel<PsiField> fields;
     private final LabeledComponent<JPanel> component;
 
-    public FieldSelectionDialog (PsiClass clazz, String title) {
+    FieldSelectionDialog (PsiClass clazz, String title) {
         super (clazz.getProject ());
         setTitle (title);
 
@@ -37,7 +37,7 @@ public class FieldSelectionDialog extends DialogWrapper {
         init ();
     }
 
-    public List<PsiField> getFields () {
+    List<PsiField> getFields () {
         return fields.getItems ();
     }
 
