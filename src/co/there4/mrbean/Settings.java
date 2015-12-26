@@ -16,6 +16,7 @@ import javax.swing.*;
 import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
+import com.intellij.ui.EditorTextField;
 import com.intellij.ui.components.JBScrollPane;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.Nullable;
@@ -66,7 +67,7 @@ public final class Settings implements Configurable {
 
     class TemplateArea extends JPanel {
         final String key;
-        final JTextArea txtaTemplate;
+        final EditorTextField txtaTemplate;
 
         TemplateArea (String key) {
             this.key = key;
@@ -74,7 +75,8 @@ public final class Settings implements Configurable {
             setLayout (new BorderLayout (5, 5));
             add (NORTH, new JLabel (key));
 
-            txtaTemplate = new JTextArea (getTemplate (key));
+            txtaTemplate = new EditorTextField (getTemplate (key));
+            txtaTemplate.setOneLineMode (false);
 
             add (BorderLayout.CENTER, new JBScrollPane (txtaTemplate));
             final JButton defaultTemplate = new JButton ("Default");

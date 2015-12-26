@@ -5,6 +5,7 @@ import static com.intellij.openapi.actionSystem.CommonDataKeys.EDITOR;
 import static com.intellij.openapi.actionSystem.CommonDataKeys.PSI_FILE;
 import static com.intellij.psi.JavaPsiFacade.getElementFactory;
 import static com.intellij.psi.util.PsiTreeUtil.getParentOfType;
+import static java.util.stream.Collectors.toList;
 import static org.apache.velocity.app.Velocity.evaluate;
 
 import com.intellij.openapi.actionSystem.AnAction;
@@ -19,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.StringWriter;
 import java.util.List;
+import java.util.stream.Stream;
 
 abstract class GenerateAction extends AnAction {
     private final String dialogTitle;
@@ -31,25 +33,24 @@ abstract class GenerateAction extends AnAction {
         this.method = method;
     }
 
-    protected void setNewMethod (PsiClass psiClass, String newMethodBody, String methodName) {
+    protected void setNewMethod (PsiClass psiClass, String newMethodBody) {
         PsiElementFactory elementFactory = getElementFactory (psiClass.getProject ());
         PsiMethod newEqualsMethod =
             elementFactory.createMethodFromText (newMethodBody, psiClass);
-        PsiElement method = addOrReplaceMethod (psiClass, newEqualsMethod, methodName);
+        PsiElement method = addOrReplaceMethod (psiClass, newEqualsMethod);
         Project project = psiClass.getProject ();
         JavaCodeStyleManager.getInstance (project).shortenClassReferences (method);
     }
 
-    protected PsiElement addOrReplaceMethod (
-        PsiClass clazz, PsiMethod equalsMethod, String methodName) {
-
-        PsiMethod existingEqualsMethod = findMethod (clazz, methodName);
+    protected PsiElement addOrReplaceMethod (PsiClass clazz, PsiMethod method) {
+        PsiMethod existingEqualsMethod = findMethod (clazz, method);
         return existingEqualsMethod != null?
-            existingEqualsMethod.replace (equalsMethod) :
-            clazz.add (equalsMethod);
+            existingEqualsMethod.replace (method) :
+            clazz.add (method);
     }
 
-    protected PsiMethod findMethod (PsiClass clazz, String methodName) {
+    protected PsiMethod findMethod (PsiClass clazz, PsiMethod searchedMethod) {
+        String methodName = searchedMethod.getName ();
         String psiClassName = clazz.getName ();
         for (PsiMethod method : clazz.getAllMethods ()) {
             if (method == null || method.getContainingClass () == null)
@@ -57,22 +58,30 @@ abstract class GenerateAction extends AnAction {
 
             String currentClass = method.getContainingClass ().getName ();
             String currentMethod = method.getName ();
-            if (psiClassName.equals (currentClass) && methodName.equals (currentMethod))
+
+            if (psiClassName != null &&
+                psiClassName.equals (currentClass) &&
+                methodName.equals (currentMethod) &&
+                getParameterList (method).equals (getParameterList (searchedMethod)))
                 return method;
         }
         return null;
     }
 
-    protected void generate (
-        PsiClass clazz, List<PsiField> fields, String template, String name) {
+    private List<String> getParameterList (PsiMethod method) {
+        return Stream.of (method.getParameterList ().getParameters ())
+            .map (p -> p.getType ().getCanonicalText ())
+            .collect (toList());
+    }
 
+    protected void generate (PsiClass clazz, List<PsiField> fields, String template) {
         VelocityContext context = new VelocityContext();
         context.put("clazz", clazz);
         context.put("fields", fields);
 
         StringWriter output = new StringWriter();
         evaluate (context, output, "mrbean", template);
-        setNewMethod (clazz, output.toString (), name);
+        setNewMethod (clazz, output.toString ());
     }
 
     private PsiClass getPsiClassFromContext (AnActionEvent evt) {
@@ -102,7 +111,7 @@ abstract class GenerateAction extends AnAction {
     protected void generate (final PsiClass clazz, final List<PsiField> fields) {
         new WriteCommandAction.Simple (clazz.getProject (), clazz.getContainingFile ()) {
             @Override protected void run () throws Throwable {
-                generate (clazz, fields, method == null? "" : getTemplate (method), method);
+                generate (clazz, fields, method == null? "" : getTemplate (method));
             }
         }.execute ();
     }
