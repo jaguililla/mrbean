@@ -14,15 +14,15 @@ import javax.swing.*;
 import java.util.List;
 
 final class FieldSelectionDialog extends DialogWrapper {
-    private CollectionListModel<PsiField> fields;
+    private final JBList fieldList;
     private final LabeledComponent<JPanel> component;
 
     FieldSelectionDialog (PsiClass clazz, String title) {
         super (clazz.getProject ());
         setTitle (title);
 
-        fields = new CollectionListModel<> (clazz.getAllFields ());
-        JBList fieldList = new JBList (fields);
+        final CollectionListModel<PsiField> fields = new CollectionListModel<> (clazz.getAllFields ());
+        fieldList = new JBList (fields);
         fieldList.setCellRenderer (new DefaultPsiElementCellRenderer ());
         fieldList.getSelectionModel ().setSelectionInterval (0, fields.getSize () - 1);
         fieldList.requestFocus ();
@@ -37,8 +37,8 @@ final class FieldSelectionDialog extends DialogWrapper {
         init ();
     }
 
-    List<PsiField> getFields () {
-        return fields.getItems ();
+    @SuppressWarnings ("unchecked") List<PsiField> getFields () {
+        return (List<PsiField>)fieldList.getSelectedValuesList ();
     }
 
     @Nullable @Override protected JComponent createCenterPanel () {
