@@ -1,4 +1,39 @@
 /** @see #$field.Name */
 public void set$fieldName ($field.Type.CanonicalText $field.Name) {
-    this.$field.Name = $field.Name
+    this.$field.Name = $field.Name;
 }
+
+##~
+#if ($fieldType == "List")
+/** @see #$field.Name */
+public void set$fieldName (${fieldTypeParameters.get(0).getCanonicalText()}... $field.Name) {
+    set$fieldName (java.util.Arrays.asList ($field.Name));
+}
+#end
+
+##~
+#if ($fieldType == "Optional")
+/** @see #$field.Name */
+public void set$fieldName (${fieldTypeParameters.get(0).getCanonicalText()} $field.Name) {
+    set$fieldName (java.util.Optional.ofNullable ($field.Name));
+}
+#end
+
+##~
+#if ($fieldType == "Set")
+## TODO Add support for 'EnumSets' if generic type extends from 'Enum'
+/** @see #$field.Name */
+public void set$fieldName (${fieldTypeParameters.get(0).getCanonicalText()}... $field.Name) {
+    set$fieldName (new HashSet<> (java.util.Arrays.asList ($field.Name)));
+}
+#end
+
+##~
+#if ($fieldType == "Map")
+#set ($keyType = ${fieldTypeParameters.get(0).getCanonicalText()})
+#set ($valueType = ${fieldTypeParameters.get(1).getCanonicalText()})
+/** @see #$field.Name */
+public void set$fieldName (Map.Entry<$keyType, $valueType>... $field.Name) {
+    set$fieldName (Stream.of ($field.Name).collect (Collectors.toMap (Map.Entry::getKey, Map.Entry::getValue)));
+}
+#end
