@@ -1,8 +1,44 @@
 /** @see #$field.Name */
-public $clazz.Name $fieldName ($field.Type.CanonicalText $field.Name) {
+public $clazz.Name with$fieldName ($field.Type.CanonicalText $field.Name) {
     return new $clazz.Name (
     #foreach ($field in $fields)
         $field.Name#if ($foreach.hasNext), #end
     #end
+
     );
 }
+
+##~
+#if ($fieldType == "List")
+/** @see #$field.Name */
+public $clazz.Name with$fieldName (${fieldTypeParameters.get(0).getCanonicalText()}... $field.Name) {
+    return with$fieldName (java.util.Arrays.asList ($field.Name));
+}
+#end
+
+##~
+#if ($fieldType == "Optional")
+/** @see #$field.Name */
+public $clazz.Name with$fieldName (${fieldTypeParameters.get(0).getCanonicalText()} $field.Name) {
+    return with$fieldName (java.util.Optional.ofNullable ($field.Name));
+}
+#end
+
+##~
+#if ($fieldType == "Set")
+## TODO Add support for 'EnumSets' if generic type extends from 'Enum'
+/** @see #$field.Name */
+public $clazz.Name with$fieldName (${fieldTypeParameters.get(0).getCanonicalText()}... $field.Name) {
+    return with$fieldName (new HashSet<> (java.util.Arrays.asList ($field.Name)));
+}
+#end
+
+##~
+#if ($fieldType == "Map")
+#set ($keyType = ${fieldTypeParameters.get(0).getCanonicalText()})
+#set ($valueType = ${fieldTypeParameters.get(1).getCanonicalText()})
+/** @see #$field.Name */
+public $clazz.Name with$fieldName (Map.Entry<$keyType, $valueType>... $field.Name) {
+    return with$fieldName (Stream.of ($field.Name).collect (Collectors.toMap (Map.Entry::getKey, Map.Entry::getValue)));
+}
+#end

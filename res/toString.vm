@@ -1,6 +1,6 @@
 /** {@inheritDoc} */
 @Override public String toString() {
-    return new java.util.StringJoiner("\n")
+    return new java.util.StringJoiner(", ", getClass ().getSimpleName () + " {", "}")
     #foreach ($field in $fields)
         .add("$field.Name: " + String.valueOf ($field.Name))
     #end
