@@ -22,8 +22,8 @@ abstract class GenerateAction
 
     protected fun setNewMethod(psiClass: PsiClass, newMethodBody: String) {
         val elementFactory = getElementFactory(psiClass.project)
-        val newEqualsMethod = elementFactory.createMethodFromText(newMethodBody, psiClass)
-        val method = addOrReplaceMethod(psiClass, newEqualsMethod)
+        val newMethod = elementFactory.createMethodFromText(newMethodBody, psiClass)
+        val method = addOrReplaceMethod(psiClass, newMethod)
         val project = psiClass.project
         JavaCodeStyleManager.getInstance(project).shortenClassReferences(method)
     }
@@ -31,28 +31,17 @@ abstract class GenerateAction
     protected fun addOrReplaceMethod(clazz: PsiClass, method: PsiMethod): PsiElement =
         findMethod(clazz, method)?.replace(method) ?: clazz.add(method)
 
-    protected fun findMethod(clazz: PsiClass, searchedMethod: PsiMethod): PsiMethod? {
-        val methodName = searchedMethod.name
-        val psiClassName = clazz.name
-        for (method in clazz.allMethods) {
-            if (method == null || method.containingClass == null)
-                continue
-
-            val currentClass = method.containingClass!!.name
-            val currentMethod = method.name
-
-            if (psiClassName != null &&
-                    psiClassName == currentClass &&
-                    methodName == currentMethod &&
-                    getParameterList(method) == getParameterList(searchedMethod))
-                return method
+    protected fun findMethod(clazz: PsiClass, searchedMethod: PsiMethod): PsiMethod? =
+        clazz.allMethods.firstOrNull {
+            it != null &&
+            it.containingClass != null
+            it.containingClass!!.name == clazz.name &&
+            it.name == searchedMethod.name &&
+            getParameterList(it) == getParameterList(searchedMethod)
         }
-        return null
-    }
 
-    private fun getParameterList(method: PsiMethod): List<String> {
-        return method.parameterList.parameters.map{ p -> p.type.canonicalText }.toList()
-    }
+    private fun getParameterList(method: PsiMethod): List<String> =
+        method.parameterList.parameters.map { p -> p.type.canonicalText }.toList()
 
     protected open fun generate(clazz: PsiClass, fields: List<PsiField>, template: String) {
         val context = VelocityContext()
