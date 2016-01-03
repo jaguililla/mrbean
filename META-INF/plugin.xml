@@ -1,13 +1,15 @@
 <idea-plugin version="2">
     <id>co.there4.mrbean</id>
     <name>MrBean</name>
-    <version>0.2</version>
+    <version>0.3</version>
     <vendor email="juanjoaguililla@gmail.com" url="http://there4.com">there4.co</vendor>
 
     <description>Let MrBean generate most of the boiler plate for you!</description>
 
     <change-notes>
         <![CDATA[
+        * Initial support for annotation processing to generate code at compile time
+        * Port to Kotlin language
         * Use 'EditorTextField'
         * Fix bug with field selection
         * Clean up default templates
