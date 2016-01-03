@@ -8,6 +8,8 @@
 
     <change-notes>
         <![CDATA[
+        * Initial support for annotation processing to generate code at compile time
+        * Port to Kotlin language
         * Use 'EditorTextField'
         * Fix bug with field selection
         * Clean up default templates
