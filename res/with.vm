@@ -38,7 +38,7 @@ public $clazz.Name with$fieldName (${fieldTypeParameters.get(0).getCanonicalText
 #set ($keyType = ${fieldTypeParameters.get(0).getCanonicalText()})
 #set ($valueType = ${fieldTypeParameters.get(1).getCanonicalText()})
 /** @see #$field.Name */
-public $clazz.Name with$fieldName (Map.Entry<$keyType, $valueType>... $field.Name) {
+@SafeVarargs public final $clazz.Name with$fieldName (Map.Entry<$keyType, $valueType>... $field.Name) {
     return with$fieldName (Stream.of ($field.Name).collect (Collectors.toMap (Map.Entry::getKey, Map.Entry::getValue)));
 }
 #end
