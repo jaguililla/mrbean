@@ -77,9 +77,9 @@ abstract class GenerateAction
         evt.presentation.isEnabled = clazz != null
     }
 
-    protected open fun generate(clazz: PsiClass, fields: List<PsiField>) {
+    open fun generate(clazz: PsiClass, fields: List<PsiField>) {
         object : WriteCommandAction.Simple<Any>(clazz.project, clazz.containingFile) {
-            protected override fun run() {
+            override fun run() {
                 generate(clazz, fields, if (method == null) "" else getTemplate (method))
             }
         }.execute()

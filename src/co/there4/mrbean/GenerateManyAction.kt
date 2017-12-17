@@ -11,11 +11,11 @@ import com.intellij.psi.impl.source.PsiClassReferenceType
 import org.apache.velocity.VelocityContext
 
 abstract class GenerateManyAction
-    internal constructor(text: String, dialogTitle: String, method: String) :
+internal constructor(text: String, dialogTitle: String, method: String) :
         GenerateAction(text, dialogTitle, method) {
 
-    protected override fun generate(clazz: PsiClass, fields: List<PsiField>, template: String) {
-        val templates = asList(*template.split("##~".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray())
+    override fun generate(clazz: PsiClass, fields: List<PsiField>, template: String) {
+        val templates = asList(*template.split("##~".toRegex()).dropLastWhile(String::isEmpty).toTypedArray())
 
         fields.forEach { f ->
             val context = VelocityContext()
@@ -45,7 +45,6 @@ abstract class GenerateManyAction
                             setNewMethod(clazz, body)
                     }
                 } catch (e: IOException) {
-                    e.printStackTrace()
                 }
             }
         }

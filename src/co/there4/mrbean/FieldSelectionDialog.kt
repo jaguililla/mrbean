@@ -12,7 +12,7 @@ import com.intellij.ui.components.JBList
 import javax.swing.*
 
 internal class FieldSelectionDialog(clazz: PsiClass, title: String) : DialogWrapper(clazz.project) {
-    private val fieldList: JBList
+    private val fieldList: JBList<Any>
     private val component: LabeledComponent<JPanel>
 
     val fields: List<PsiField>

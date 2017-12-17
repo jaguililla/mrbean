@@ -11,7 +11,7 @@ abstract class GenerateCompoundAction
 
     private val actions: List<GenerateAction> = asList(*actions)
 
-    protected override fun generate(clazz: PsiClass, fields: List<PsiField>) {
+    override fun generate(clazz: PsiClass, fields: List<PsiField>) {
         actions.forEach { action -> action.generate(clazz, fields) }
     }
 }
