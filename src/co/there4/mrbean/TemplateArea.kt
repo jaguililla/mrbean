@@ -22,7 +22,7 @@ internal class TemplateArea(val key: String) : JPanel() {
 
         add(CENTER, JBScrollPane(txtaTemplate))
         val defaultTemplate = JButton("Default")
-        defaultTemplate.addActionListener { evt -> reset() }
+        defaultTemplate.addActionListener { reset() }
         add(EAST, defaultTemplate)
     }
 

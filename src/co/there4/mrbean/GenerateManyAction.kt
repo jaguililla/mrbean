@@ -22,7 +22,7 @@ internal constructor(text: String, dialogTitle: String, method: String) :
             context.put("clazz", clazz)
             context.put("fields", fields)
 
-            val fn = f.name ?: throw IllegalStateException()
+            val fn = f.name
 
             val fName = fn.substring(0, 1).toUpperCase() + fn.substring(1)
 
